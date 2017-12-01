@@ -21,6 +21,7 @@ import           RewriteLibs          (chain)
 main :: IO ()
 main = do
   version <- fromMaybe "dev" <$> lookupEnv "DAEDALUS_VERSION"
+  api <- fromMaybe "cardano" <$> lookupEnv "API"
 
   let appRoot = "../release/darwin-x64/Daedalus-darwin-x64/Daedalus.app"
       dir     = appRoot <> "/Contents/MacOS"
@@ -32,20 +33,25 @@ main = do
   procs "iconutil" ["--convert", "icns", "--output", T.pack dir <> "/../Resources/electron.icns", "icons/electron.iconset"] mempty
 
   echo "Preparing files ..."
-  copyFile "cardano-launcher" (dir <> "/cardano-launcher")
-  copyFile "cardano-node" (dir <> "/cardano-node")
-  copyFile "wallet-topology.yaml" (dir <> "/wallet-topology.yaml")
-  copyFile "configuration.yaml" (dir <> "/configuration.yaml")
-  genesisFiles <- glob "*genesis*.json"
-  procs "cp" (fmap T.pack (genesisFiles <> [dir])) mempty
-  copyFile "log-config-prod.yaml" (dir <> "/log-config-prod.yaml")
-  copyFile "build-certificates-unix.sh" (dir <> "/build-certificates-unix.sh")
-  copyFile "ca.conf"     (dir <> "/ca.conf")
-  copyFile "server.conf" (dir <> "/server.conf")
-  copyFile "client.conf" (dir <> "/client.conf")
+  case api of
+    "cardano" -> do
+      copyFile "cardano-launcher" (dir <> "/cardano-launcher")
+      copyFile "cardano-node" (dir <> "/cardano-node")
+      copyFile "wallet-topology.yaml" (dir <> "/wallet-topology.yaml")
+      copyFile "configuration.yaml" (dir <> "/configuration.yaml")
+      genesisFiles <- glob "*genesis*.json"
+      procs "cp" (fmap T.pack (genesisFiles <> [dir])) mempty
+      copyFile "log-config-prod.yaml" (dir <> "/log-config-prod.yaml")
+      copyFile "build-certificates-unix.sh" (dir <> "/build-certificates-unix.sh")
+      copyFile "ca.conf"     (dir <> "/ca.conf")
+      copyFile "server.conf" (dir <> "/server.conf")
+      copyFile "client.conf" (dir <> "/client.conf")
 
-  -- Rewrite libs paths and bundle them
-  _ <- chain dir $ fmap T.pack [dir <> "/cardano-launcher", dir <> "/cardano-node"]
+      -- Rewrite libs paths and bundle them
+      _ <- chain dir $ fmap T.pack [dir <> "/cardano-launcher", dir <> "/cardano-node"]
+      pure ()
+    "etc" -> do
+      pure ()
 
   -- Prepare launcher
   de <- doesFileExist (dir <> "/Frontend")
