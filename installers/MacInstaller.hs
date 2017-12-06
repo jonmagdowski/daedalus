@@ -51,6 +51,7 @@ main = do
       _ <- chain dir $ fmap T.pack [dir <> "/cardano-launcher", dir <> "/cardano-node"]
       pure ()
     "etc" -> do
+      copyFile "build-certificates-unix-mantis.sh" (dir <> "/build-certificates-unix.sh")
       pure ()
 
   -- Prepare launcher
@@ -69,6 +70,7 @@ main = do
   let pkgargs =
        [ "--identifier"
        , "org.daedalus.pkg"
+       -- data/scripts/postinstall is responsible for running build-certificates
        , "--scripts", "data/scripts"
        , "--component"
        , "../release/darwin-x64/Daedalus-darwin-x64/Daedalus.app"
