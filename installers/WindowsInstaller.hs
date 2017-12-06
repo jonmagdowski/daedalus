@@ -115,7 +115,7 @@ writeInstallerNSIS fullVersion = do
         createDirectory "$APPDATA\\DaedalusMantis\\Logs\\pub"
         createShortcut "$DESKTOP\\Daedalus Mantis.lnk" daedalusShortcut
         file [] "version.txt"
-        --file [] "build-certificates-win64.bat"
+        file [] "build-certificates-win64-mantis.bat"
         file [Recursive] "dlls\\"
         file [Recursive] "libressl\\"
         file [Recursive] "..\\release\\win32-x64\\Daedalus-win32-x64\\"
@@ -126,7 +126,7 @@ writeInstallerNSIS fullVersion = do
           , "DetailPrint \"liteFirewall::AddRule: $0\""
           ]
 
-        --execWait "build-certificates-win64.bat \"$INSTDIR\" >\"%APPDATA%\\Daedalus\\Logs\\build-certificates.log\" 2>&1"
+        execWait "build-certificates-win64-mantis.bat \"$INSTDIR\" >\"%APPDATA%\\Daedalus\\Logs\\build-certificates.log\" 2>&1"
 
         -- Uninstaller
         writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/DaedalusMantis" "InstallLocation" "$INSTDIR"

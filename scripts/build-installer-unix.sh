@@ -107,6 +107,7 @@ case "$API" in
       retry 5 curl -o mantis.app.zip https://s3-eu-west-1.amazonaws.com/iohk.mantis.installer/mantis.app.zip
       unzip mantis.app.zip
       ls -ltrh mantis.app/
+      rm mantis.app.zip
     }
     ;;
   cardano)
