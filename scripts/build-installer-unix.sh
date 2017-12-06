@@ -109,6 +109,7 @@ case "$API" in
       ls -ltrh mantis.app/
       rm mantis.app.zip
     }
+    INSTALLER_POSTFIX="-mantis"
     ;;
   cardano)
     test -d node_modules/daedalus-client-api/ -a -n "${fast_impure}" || {
@@ -128,6 +129,7 @@ case "$API" in
         strip installers/cardano-{node,launcher}
         rm -f node_modules/daedalus-client-api/cardano-*
     }
+    INSTALLER_POSTFIX=""
     ;;
 esac
 
@@ -152,12 +154,12 @@ cd installers
     if test -n "${upload_s3}"
     then
             echo "$0: --upload-s3 passed, will upload the installer to S3";
-            retry 5 nix-shell -p awscli --run "aws s3 cp 'dist/Daedalus-installer-${DAEDALUS_VERSION}.pkg' s3://daedalus-internal/ --acl public-read"
+            retry 5 nix-shell -p awscli --run "aws s3 cp 'dist/Daedalus${INSTALLER_POSTFIX}-installer-${DAEDALUS_VERSION}.pkg' s3://daedalus-internal/ --acl public-read"
     fi
     if test -n "${test_install}"
     then echo "$0:  --test-install passed, will test the installer for installability";
          case ${os} in
-                 osx )   sudo installer -dumplog -verbose -target / -pkg "dist/Daedalus-installer-${DAEDALUS_VERSION}.pkg";;
+                 osx )   sudo installer -dumplog -verbose -target / -pkg "dist/Daedalus${INSTALLER_POSTFIX}-installer-${DAEDALUS_VERSION}.pkg";;
                  linux ) echo "WARNING: installation testing not implemented on Linux" >&2;; esac; fi
 cd ..
 

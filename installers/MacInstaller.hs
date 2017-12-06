@@ -26,7 +26,10 @@ main = do
   let appRoot = "../release/darwin-x64/Daedalus-darwin-x64/Daedalus.app"
       dir     = appRoot <> "/Contents/MacOS"
       -- resDir  = appRoot <> "/Contents/Resources"
-      pkg     = "dist/Daedalus-installer-" <> version <> ".pkg"
+  let
+    pkg = case api of
+      "cardano" -> "dist/Daedalus-installer-" <> version <> ".pkg"
+      "etc" -> "dist/Daedalus-mantis-installer-" <> version <> ".pkg"
   createDirectoryIfMissing False "dist"
 
   echo "Creating icons ..."
@@ -58,13 +61,25 @@ main = do
   de <- doesFileExist (dir <> "/Frontend")
   unless de $ renameFile (dir <> "/Daedalus") (dir <> "/Frontend")
   run "chmod" ["+x", T.pack (dir <> "/Frontend")]
-  writeFile (dir <> "/Daedalus") $ unlines
-    [ "#!/usr/bin/env bash"
-    , "cd \"$(dirname $0)\""
-    , "mkdir -p \"$HOME/Library/Application Support/Daedalus/Secrets-1.0\""
-    , "mkdir -p \"$HOME/Library/Application Support/Daedalus/Logs/pub\""
-    , doLauncher
-    ]
+
+  case api of
+    "cardano" -> do
+      writeFile (dir <> "/Daedalus") $ unlines
+        [ "#!/usr/bin/env bash"
+        , "cd \"$(dirname $0)\""
+        , "mkdir -p \"$HOME/Library/Application Support/Daedalus/Secrets-1.0\""
+        , "mkdir -p \"$HOME/Library/Application Support/Daedalus/Logs/pub\""
+        , doLauncher
+        ]
+    "etc" -> do
+      writeFile (dir <> "/Daedalus") $ unlines
+        [ "#!/usr/bin/env bash"
+        , "cd \"$(dirname $0)\""
+        , "export API=etc"
+        , "export MANTIS_PATH=../Resources/app/mantis.app/Contents/Java/"
+        , "export MANTIS_CMD=bin/mantis"
+        , "./Frontend"
+        ]
   run "chmod" ["+x", T.pack (dir <> "/Daedalus")]
 
   let pkgargs =
