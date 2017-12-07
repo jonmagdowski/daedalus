@@ -76,7 +76,7 @@ main = do
         [ "#!/usr/bin/env bash"
         , "cd \"$(dirname $0)\""
         , "export API=etc"
-        , "export MANTIS_PATH=../Resources/app/mantis.app/Contents/Java/"
+        , "export MANTIS_PATH=../Resources/app/mantis.app/Contents/MacOS/mantis"
         , "export MANTIS_CMD=bin/mantis"
         , "./Frontend"
         ]
