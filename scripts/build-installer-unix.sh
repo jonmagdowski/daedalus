@@ -141,10 +141,6 @@ test -d "release/darwin-x64/Daedalus-darwin-x64" -a -n "${fast_impure}" || {
         echo "Size of Electron app is $(du -sh release)"
 }
 
-test -n "$(which stack)"     -a -n "${fast_impure}" ||
-        retry 5 bash -c "curl -L https://www.stackage.org/stack/${os}-x86_64 | \
-                         tar xz --strip-components=1 -C ~/.local/bin"
-
 cd installers
     if test "${travis_pr}" = "false" -a "${os}" != "linux" # No Linux keys yet.
     then retry 5 nix-shell -p awscli --run "aws s3 cp --region eu-central-1 s3://iohk-private/${key} macos.p12"
