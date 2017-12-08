@@ -78,6 +78,7 @@ main = do
         , "export API=etc"
         , "export MANTIS_PATH=../Resources/app/mantis.app/Contents/"
         , "export MANTIS_CMD=MacOS/mantis"
+        , "mkdir -p \"$HOME/Library/Application Support/Daedalus/Logs/\""
         , "./Frontend"
         ]
   run "chmod" ["+x", T.pack (dir <> "/Daedalus")]
