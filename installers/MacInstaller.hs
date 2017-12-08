@@ -76,8 +76,8 @@ main = do
         [ "#!/usr/bin/env bash"
         , "cd \"$(dirname $0)\""
         , "export API=etc"
-        , "export MANTIS_PATH=../Resources/app/mantis.app/Contents/MacOS/mantis"
-        , "export MANTIS_CMD=bin/mantis"
+        , "export MANTIS_PATH=../Resources/app/mantis.app/Contents/"
+        , "export MANTIS_CMD=MacOS/mantis"
         , "./Frontend"
         ]
   run "chmod" ["+x", T.pack (dir <> "/Daedalus")]
