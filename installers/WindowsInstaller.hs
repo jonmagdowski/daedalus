@@ -16,10 +16,11 @@ import           Launcher
 launcherScript :: [String]
 launcherScript =
   [ "@echo off"
+  , "set DAEDALUS_DIR=%~dp0"
   , "set API=etc"
   , "set MANTIS_PATH=%DAEDALUS_DIR%\\resources\\app\\mantis"
   , "set MANTIS_CMD=mantis.exe"
-  , "Deadalus.exe"
+  , "Daedalus.exe"
   ]
 
 daedalusShortcut :: [Attrib]
