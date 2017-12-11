@@ -13,9 +13,18 @@ import           Turtle.Line        (unsafeTextToLine)
 
 import           Launcher
 
+launcherScript :: [String]
+launcherScript =
+  [ "@echo off"
+  , "set API=etc"
+  , "set MANTIS_PATH=%DAEDALUS_DIR%\\resources\\app\\mantis"
+  , "set MANTIS_CMD=mantis.exe"
+  , "Deadalus.exe"
+  ]
+
 daedalusShortcut :: [Attrib]
 daedalusShortcut =
-    [ Target "$INSTDIR\\Daedalus.exe"
+    [ Target "$INSTDIR\\daedalus.bat"
     , IconFile "$INSTDIR\\Daedalus.exe"
     , StartOptions "SW_SHOWMINIMIZED"
     , IconIndex 0
@@ -116,6 +125,7 @@ writeInstallerNSIS fullVersion = do
         createShortcut "$DESKTOP\\Daedalus Mantis.lnk" daedalusShortcut
         file [] "version.txt"
         file [] "build-certificates-win64-mantis.bat"
+        writeFileLines "$INSTDIR\\daedalus.bat" (map str launcherScript)
         file [Recursive] "dlls\\"
         file [Recursive] "libressl\\"
         file [Recursive] "..\\release\\win32-x64\\Daedalus-win32-x64\\"
@@ -134,7 +144,7 @@ writeInstallerNSIS fullVersion = do
         writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/DaedalusMantis" "ProductVersion" (str fullVersion)
         writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/DaedalusMantis" "VersionMajor" (str . (!! 0). parseVersion $ fullVersion)
         writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/DaedalusMantis" "VersionMinor" (str . (!! 1). parseVersion $ fullVersion)
-        writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/DaedalusMantis" "DisplayName" "Daedalus"
+        writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/DaedalusMantis" "DisplayName" "Daedalus Mantis"
         writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/DaedalusMantis" "DisplayVersion" (str fullVersion)
         writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/DaedalusMantis" "UninstallString" "\"$INSTDIR/uninstall.exe\""
         writeRegStr HKLM "Software/Microsoft/Windows/CurrentVersion/Uninstall/DaedalusMantis" "QuietUninstallString" "\"$INSTDIR/uninstall.exe\" /S"
