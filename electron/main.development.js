@@ -77,9 +77,9 @@ if (isEtcApi && mantisCmd && mantisPath) {
     Log.info('Stopping Mantis...');
     psTree(mantis.pid, (err, children) => {
       // Kill all Mantis child processes
-      spawn('kill', ['-9'].concat(children.map((p) => (p.PID))));
+      children.forEach(function (proc { process.kill(proc.PID); });
     });
-    spawn('kill', ['-9', mantis.pid]); // Kill main Mantis process
+    process.kill(mantis.pid); // Kill main Mantis process
   });
 }
 
